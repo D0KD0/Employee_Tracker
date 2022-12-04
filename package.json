@@ -1,0 +1,20 @@
+{
+  "name": "employee_tracker",
+  "version": "1.0.0",
+  "description": "Employee tracker",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/D0KD0/Employee_Tracker.git"
+  },
+  "author": "D0KD0",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/D0KD0/Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/D0KD0/Employee_Tracker#readme"
+}
