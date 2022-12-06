@@ -1,6 +1,5 @@
-// get the client
-const mysql = require ('mysql2');
-const inquirer = require ('inquirer');
+const mysql = require('mysql2');
+const inquirer = require('inquirer');
 
 const add = require('./js/add');
 const view = require('./js/view');
@@ -16,7 +15,7 @@ const connection = mysql.createConnection({
 // start of question 
 const firstQuestion = [
   {
-    type: 'input',
+    type: 'list',
     message: 'Choose one of the following options:',
     name: 'options',
     choices: [

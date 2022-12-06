@@ -1,12 +1,12 @@
-const mysql = requir('mysql2');
+const mysql = require('mysql2');
 require('dotenv').config();
 
-const db = mysql.createconnection({
+const db = mysql.createConnection({
     host: 'localhost',
-    user: process.env.USER,
-    password: process.env.PASSWORD,
+    user: 'root',
+    password: '',
     database: 'employee_db'
-});
+  });
 
 const addDept = (department) => {
     db.query(`insert into department(name) values(?)`, department)
