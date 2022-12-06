@@ -5,13 +5,8 @@ const add = require('./js/add');
 const view = require('./js/view');
 const update = require('./js/update');
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  database: 'test',
-  password: ''
-});
-       
+db = require("./db/connection.js");
+
 // start of question 
 const firstQuestion = [
   {
@@ -141,7 +136,6 @@ const updateRoleChoices = () => {
   db.query(`SELECT id, title FROM role`, function (err, results) {
       results.forEach(role => {
           updateEmpQuestions[1].choices.push(role.title);
-          // console.log(updateEmployeeQuestions[1].choices)
       });
     })
     
@@ -193,8 +187,6 @@ const startPrompt = () => {
       updateEmpPrompt();
       break;
 
-      case choice[7] :
-      break;
     }
   })
 }
@@ -224,9 +216,9 @@ const addEmpPrompt = () => {
   inquirer.prompt(addEmployeeQuestions)
           .then((empObj) => {
               const { firstname, lastname, role, manager } = empObj;
-              db.query(`select role.id as roleId from role where title = ?`, role, function(err, results) {
+              db.query(`SELECT role.id AS roleId FROM role WHERE title = ?`, role, function(err, results) {
                   const roleIndex = results[0].roleId
-              db.query(`select employee.id as managerId from employee where first_name = ?`, manager, function(err, results) {
+              db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
                   const managerIndex = results[0].managerId
                   add.addEmployees(firstname, lastname, roleIndex, managerIndex)
               })
@@ -241,7 +233,7 @@ const updateEmpPrompt = () => {
   inquirer.prompt(updateEmpQuestions)
           .then((updateObj) => {
               const { employee, role } = updateObj;
-              db.query(`select id from role where title = ?`, role, function(err, results) {
+              db.query(`SELECT id FROM role WHERE title = ?`, role, function(err, results) {
                   const roleIndex = results[0].id;
                   update(roleIndex, employee);
               })

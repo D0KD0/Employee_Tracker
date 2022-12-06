@@ -9,19 +9,19 @@ const db = mysql.createConnection({
       database: 'employee_db'
     });
 
-const viewDept = () => {
-  db.query(`select * from department order by id`, function (err, results) {
+const viewDepts = () => {
+  db.query(`SELECT * FROM department ORDER BY id`, function (err, results) {
     console.log("");
     console.table(results);
   })
 }
 
-const viewRole = () => {
-  db.query(`select role.id, title, name as department, salary 
-            from role
-            join department
-            on role.department_id = department.id
-            order by role.id`, function (err, results) {
+const viewRoles = () => {
+  db.query(`SELECT role.id, title, name AS department, salary 
+            FROM role
+            JOIN department
+            ON role.department_id = department.id
+            ORDER BY role.id`, function (err, results) {
     console.log("");
     console.table(results);
   })
@@ -29,17 +29,17 @@ const viewRole = () => {
 
 const viewEmployees = () => {
   db.query(`select employee.id, employee.first_name, employee.last_name, role.title, department.name as department, salary, concat(managers.first_name, ' ', managers.last_name) as manager
-            from employee
-            join role
-            on employee.role_id = role.id
-            join department
-            on role.department_id = department.id
-            left join employee AS managers
-            on employee.manager_id = managers.id
-            order by employee.id`, function (err, results) {
+            FROM employee
+            JOIN role
+            ON employee.role_id = role.id
+            JOIN department
+            ON role.department_id = department.id
+            LEFT JOIN employee AS managers
+            ON employee.manager_id = managers.id
+            ORDER BY employee.id`, function (err, results) {
     console.log('');
     console.table(results);
   })
 }
 
-module.exports = {viewDept, viewRole, viewEmployees};
+module.exports = {viewDepts, viewRoles, viewEmployees};
