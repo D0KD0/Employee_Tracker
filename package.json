@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/D0KD0/Employee_Tracker/issues"
   },
-  "homepage": "https://github.com/D0KD0/Employee_Tracker#readme"
+  "homepage": "https://github.com/D0KD0/Employee_Tracker#readme",
+  "dependencies": {
+    "inquirer": "^9.1.4"
+  }
 }

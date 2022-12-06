@@ -1,6 +1,6 @@
 // get the client
-const mysql = require('mysql2');
-const inquirer = require('inquirer');
+const mysql = require ('mysql2');
+const inquirer = require ('inquirer');
 
 const add = require('./js/add');
 const view = require('./js/view');
