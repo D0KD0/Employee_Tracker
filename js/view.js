@@ -11,7 +11,7 @@ const db = mysql.createConnection({
 
 const viewDepts = () => {
   db.query(`SELECT * FROM department ORDER BY id`, function (err, results) {
-    console.log("");
+    if (err) throw err;
     console.table(results);
   })
 }

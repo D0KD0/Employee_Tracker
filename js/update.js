@@ -12,4 +12,4 @@ const updateEmployee = (role, employee) => {
     db.query(`update employee set role_id = ? where first_name = ?`, [role, employee])
 } 
 
-module.exports = updateEmployee;
+module.exports = {updateEmployee};

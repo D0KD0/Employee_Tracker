@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
-const add = require('./js/add');
-const view = require('./js/view');
-const update = require('./js/update');
+const {addDept, addRole, addEmployees} = require('./js/add');
+const {viewDepts, viewRoles, viewEmployees} = require('./js/view');
+const {updateEmployee} = require('./js/update');
 
 db = require("./db/connection.js");
 
@@ -126,7 +126,6 @@ const updateEmpChoices = () => {
   db.query(`SELECT id, first_name FROM employee`, function (err, results) {
       results.forEach(employee => {
           updateEmpQuestions[0].choices.push(employee.first_name);
-          // console.log(updateEmpQuestions[0].choices)
       });
     })
     
@@ -148,46 +147,46 @@ const startPrompt = () => {
   inquirer
   .prompt(firstQuestion)
   .then( (choiceObj) => {
-    const {choice} = choiceObj;
-    switch(choice) {
-      case choices[0] :
-      view.viewDepts();
+    const {options} = choiceObj;
+    switch(options) {
+      case 'View all departments':
+      viewDepts();
       startPrompt();
       break;
 
-      case choices[1] :
-      view.viewRoles();
+      case 'View all roles' :
+      viewRoles();
       startPrompt();
       break;
 
-      case choices[2] :
-      view.viewEmployees();
+      case  'View all employees' :
+      viewEmployees();
       startPrompt();
       break;
 
-      case choices[3] :
+      case 'Add a department' :
       addDeptPrompt();
       break;
 
-      case choices[4] :
+      case 'Add a role' :
       decideDept();
       addRolePrompt();
       break;
 
-      case choices[5] :
+      case 'Add an employee' :
       decideDept();
       decideRole();
       decideMgr();
       addEmpPrompt();
       break;
 
-      case choices[6] :
+      case 'Update an employee role' :
       updateEmpChoices();
       updateRoleChoices();
       updateEmpPrompt();
       break;
-
     }
+    
   })
 }
 
@@ -195,7 +194,7 @@ const startPrompt = () => {
 const addDeptPrompt = () => {
   inquirer.prompt(addDeptQuestions)
   .then((deptObj) => {
-    add.addDept(deptObj.depName);
+    addDept(deptObj.deptName);
   })
   .then(() => startPrompt())
 }
@@ -206,7 +205,7 @@ const addRolePrompt = () => {
     const { roleName, roleSalary, roleDep } = roleObj;
     db.query(`select id from department where name = ?`, roleDep, function(err, results) {
       const roleIndex = results[0].id;
-      add.addRole(roleName, roleSalary, roleIndex);
+      addRole(roleName, roleSalary, roleIndex);
   })
 })
   .then(()=> startPrompt())
@@ -220,7 +219,7 @@ const addEmpPrompt = () => {
                   const roleIndex = results[0].roleId
               db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
                   const managerIndex = results[0].managerId
-                  add.addEmployees(firstname, lastname, roleIndex, managerIndex)
+                  addEmployees(firstname, lastname, roleIndex, managerIndex)
               })
           })
 
