@@ -36,7 +36,7 @@ const addDeptQs = [
 const decideDept = () => {
   db.query(`SELECT * FROM department ORDER bY id`, function (err, results) {
     results.forEach(dep => {
-      addRoleQs[2].choices.push(dep.name);
+      addRoleQs[2].choices.push(department.name);
     });
   })
 }
@@ -44,7 +44,7 @@ const decideDept = () => {
 const decideRole = () => {
   db.query(`select * from role order by id`, function (err, results) {
     results.forEach(role => {
-      addRoleQs[2].choices.push(dep.name);
+      addRoleQs[2].choices.push(department.name);
     });
   })
 }
