@@ -33,26 +33,6 @@ const addDeptQs = [
   }
 ]
 
-
-
-const decideRole = () => {
-  db.query(`select * from role order by id`, function (err, results) {
-    results.forEach(role => {
-      addRoleQs[2].choices.push(department.name);
-    });
-  });
-}
-
-const decideMgr = () => {
-  db.query(`SELECT id, first_name FROM employee order by id`, function (err, results) {
-      results.forEach(employee => {
-          addEmpQs[3].choices.push(employee.first_name);
-          updateEmpQuestions[0].choices.push(employee.first_name);
-      });
-    })
-    
-}
-
 const addRoleQs = [
   {
     type: 'input',
@@ -77,30 +57,30 @@ const addEmpQs = [
   {
     type: 'input',
     message: 'Enter a first name of the employee',
-    name: 'firstName'
+    name: 'firstname'
   },
 
   {
     type: 'input',
     message: 'Enter a last name of the employee',
-    name: 'lastName'
+    name: 'lastname'
   },
 
   {
     type: 'input',
     message: 'Enter a role of the employee',
-    name: 'newEmpRole'
+    name: 'role'
   },
 
   {
     type: 'input',
     message: 'What is a name of his/her Manager?',
-    name: 'newEmpMgr',
+    name: 'manager',
     choices: ['Unknown']
   }
 ]
 
-const updateEmpQuestions = [
+const updateEmpQs = [
   {
     type: 'list',
     message: 'Which employee you want to update his/her role?',
@@ -119,7 +99,7 @@ const updateEmpQuestions = [
 const updateEmpChoices = () => {
   db.query(`SELECT id, first_name FROM employee`, function (err, results) {
       results.forEach(employee => {
-          updateEmpQuestions[0].choices.push(employee.first_name);
+          updateEmpQs[0].choices.push(employee.first_name);
       });
     })
     
@@ -128,7 +108,7 @@ const updateEmpChoices = () => {
 const updateRoleChoices = () => {
   db.query(`SELECT id, title FROM role`, function (err, results) {
       results.forEach(role => {
-          updateEmpQuestions[1].choices.push(role.title);
+          updateEmpQs[1].choices.push(role.title);
       });
     })
     
@@ -204,28 +184,31 @@ const addEmpPrompt = () => {
   inquirer.prompt(addEmpQs)
   .then((empObj) => {
       const { firstname, lastname, role, manager } = empObj;
+
       db.query(`SELECT role.id AS roleId FROM role WHERE title = ?`, role, function(err, results) {
-          const roleIndex = results[0].roleId
+        const roleIndex = results[0].roleId
+
       db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
           const managerIndex = results[0].managerId
           addEmployees(firstname, lastname, roleIndex, managerIndex)
-          })
       })
+  })
+  
   })
   .then(()=> startPrompt())
 }
 
 
 const updateEmpPrompt = () => {
-  inquirer.prompt(updateEmpQuestions)
-          .then((updateObj) => {
-              const { employee, role } = updateObj;
-              db.query(`SELECT id FROM role WHERE title = ?`, role, function(err, results) {
-                  const roleIndex = results[0].id;
-                  update(roleIndex, employee);
-              })
-          })
-          .then(()=> startPrompt())
+  inquirer.prompt(updateEmpQs)
+  .then((updateObj) => {
+      const { employee, role } = updateObj;
+      db.query(`SELECT id FROM role WHERE title = ?`, role, function(err, results) {
+          const roleIndex = results[0].id;
+          update(roleIndex, employee);
+      })
+  })
+  .then(()=> startPrompt())
 }
 
 startPrompt();
