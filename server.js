@@ -25,7 +25,7 @@ const firstQuestion = [
   }
 ]
 
-const addDeptQuestions = [
+const addDeptQs = [
   {
     type: 'input',
     message: 'Enter a name of the department to add',
@@ -34,14 +34,32 @@ const addDeptQuestions = [
 ]
 
 const decideDept = () => {
-  db.query(`select * from department order by id`, function (err, results) {
+  db.query(`SELECT * FROM department ORDER bY id`, function (err, results) {
     results.forEach(dep => {
-      addDeptQuestions[2].choices.push(dep.name);
+      addRoleQs[2].choices.push(dep.name);
     });
   })
 }
 
-const addRoleQuestions = [
+const decideRole = () => {
+  db.query(`select * from role order by id`, function (err, results) {
+    results.forEach(role => {
+      addRoleQs[2].choices.push(dep.name);
+    });
+  })
+}
+
+const decideMgr = () => {
+  db.query(`SELECT id, first_name FROM employee order by id`, function (err, results) {
+      results.forEach(employee => {
+          addEmployeeQuestions[3].choices.push(employee.first_name);
+          updateEmpQuestions[0].choices.push(employee.first_name);
+      });
+    })
+    
+}
+
+const addRoleQs = [
   {
     type: 'input',
     message: 'Enter a name of the role',
@@ -60,14 +78,6 @@ const addRoleQuestions = [
     name: 'roleDept'
   }
 ]
-
-const decideRole = () => {
-  db.query(`select * from role order by id`, function (err, results) {
-    results.forEach(role => {
-      addRoleQuestions[2].choices.push(dep.name);
-    });
-  })
-}
 
 const addEmployeeQuestions = [
   {
@@ -95,16 +105,6 @@ const addEmployeeQuestions = [
     choices: ['Unknown']
   }
 ]
-
-const decideMgr = () => {
-  db.query(`SELECT id, first_name FROM employee order by id`, function (err, results) {
-      results.forEach(employee => {
-          addEmployeeQuestions[3].choices.push(employee.first_name);
-          updateEmpQuestions[0].choices.push(employee.first_name);
-      });
-    })
-    
-}
 
 const updateEmpQuestions = [
   {
@@ -141,7 +141,6 @@ const updateRoleChoices = () => {
 }
 
 // choices
-
 const {choices} = firstQuestion[0];
 const startPrompt = () => {
   inquirer
@@ -192,7 +191,7 @@ const startPrompt = () => {
 
 // prompt
 const addDeptPrompt = () => {
-  inquirer.prompt(addDeptQuestions)
+  inquirer.prompt(addDeptQs)
   .then((deptObj) => {
     addDept(deptObj.deptName);
   })
@@ -200,7 +199,7 @@ const addDeptPrompt = () => {
 }
 
 const addRolePrompt = () => {
-  inquirer.prompt(addRoleQuestions)
+  inquirer.prompt(addRoleQs)
   .then((roleObj) => {
     const { roleName, roleSalary, roleDep } = roleObj;
     db.query(`select id from department where name = ?`, roleDep, function(err, results) {
