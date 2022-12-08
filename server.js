@@ -33,26 +33,20 @@ const addDeptQs = [
   }
 ]
 
-const decideDept = () => {
-  db.query(`SELECT * FROM department ORDER bY id`, function (err, results) {
-    results.forEach(dep => {
-      addRoleQs[2].choices.push(department.name);
-    });
-  })
-}
+
 
 const decideRole = () => {
   db.query(`select * from role order by id`, function (err, results) {
     results.forEach(role => {
       addRoleQs[2].choices.push(department.name);
     });
-  })
+  });
 }
 
 const decideMgr = () => {
   db.query(`SELECT id, first_name FROM employee order by id`, function (err, results) {
       results.forEach(employee => {
-          addEmployeeQuestions[3].choices.push(employee.first_name);
+          addEmpQs[3].choices.push(employee.first_name);
           updateEmpQuestions[0].choices.push(employee.first_name);
       });
     })
@@ -79,7 +73,7 @@ const addRoleQs = [
   }
 ]
 
-const addEmployeeQuestions = [
+const addEmpQs = [
   {
     type: 'input',
     message: 'Enter a first name of the employee',
@@ -168,14 +162,10 @@ const startPrompt = () => {
       break;
 
       case 'Add a role' :
-      decideDept();
       addRolePrompt();
       break;
 
       case 'Add an employee' :
-      decideDept();
-      decideRole();
-      decideMgr();
       addEmpPrompt();
       break;
 
@@ -199,31 +189,30 @@ const addDeptPrompt = () => {
 }
 
 const addRolePrompt = () => {
-  inquirer.prompt(addRoleQs)
-  .then((roleObj) => {
-    const { roleName, roleSalary, roleDep } = roleObj;
-    db.query(`select id from department where name = ?`, roleDep, function(err, results) {
-      const roleIndex = results[0].id;
-      addRole(roleName, roleSalary, roleIndex);
+inquirer.prompt(addRoleQs)
+.then((roleObj) => {
+  const { roleName, roleSalary, roleDept } = roleObj;
+  db.query(`select id from department where name = ?`, roleDept, function(err, results) {
+    const roleIndex = results[0].id;
+    addRole(roleName, roleSalary, roleIndex);
   })
 })
-  .then(()=> startPrompt())
+.then(()=> startPrompt())
 }
 
 const addEmpPrompt = () => {
-  inquirer.prompt(addEmployeeQuestions)
-          .then((empObj) => {
-              const { firstname, lastname, role, manager } = empObj;
-              db.query(`SELECT role.id AS roleId FROM role WHERE title = ?`, role, function(err, results) {
-                  const roleIndex = results[0].roleId
-              db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
-                  const managerIndex = results[0].managerId
-                  addEmployees(firstname, lastname, roleIndex, managerIndex)
-              })
+  inquirer.prompt(addEmpQs)
+  .then((empObj) => {
+      const { firstname, lastname, role, manager } = empObj;
+      db.query(`SELECT role.id AS roleId FROM role WHERE title = ?`, role, function(err, results) {
+          const roleIndex = results[0].roleId
+      db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
+          const managerIndex = results[0].managerId
+          addEmployees(firstname, lastname, roleIndex, managerIndex)
           })
-
-          })
-          .then(()=> startPrompt())
+      })
+  })
+  .then(()=> startPrompt())
 }
 
 
