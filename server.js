@@ -82,8 +82,8 @@ const addEmpQs = [
 
 const updateEmpQs = [
   {
-    type: 'list',
-    message: 'Which employee you want to update his/her role?',
+    type: 'input',
+    message: 'Which employee you want to update his/her role? (enter First Name)',
     name: 'empName',
     choices: []
   },
@@ -97,6 +97,7 @@ const updateEmpQs = [
 ]
 
 const updateEmpChoices = () => {
+  viewEmployees()
   db.query(`SELECT id, first_name FROM employee`, function (err, results) {
       results.forEach(employee => {
           updateEmpQs[0].choices.push(employee.first_name);
@@ -186,11 +187,17 @@ const addEmpPrompt = () => {
       const { firstname, lastname, role, manager } = empObj;
 
       db.query(`SELECT role.id AS roleId FROM role WHERE title = ?`, role, function(err, results) {
-        const roleIndex = results[0].roleId
+        let roleIndex 
+        if (results.length > 0) {
+          roleIndex = results[0].roleId
+        }
 
       db.query(`SELECT employee.id AS managerId FROM employee WHERE first_name = ?`, manager, function(err, results) {
-          const managerIndex = results[0].managerId
-          addEmployees(firstname, lastname, roleIndex, managerIndex)
+          let managerIndex 
+          if(results.length > 0) {
+            managerIndex = results[0].managerId
+          }
+            addEmployees(firstname, lastname, roleIndex, managerIndex)
       })
   })
   
@@ -200,12 +207,16 @@ const addEmpPrompt = () => {
 
 
 const updateEmpPrompt = () => {
+
   inquirer.prompt(updateEmpQs)
   .then((updateObj) => {
       const { employee, role } = updateObj;
       db.query(`SELECT id FROM role WHERE title = ?`, role, function(err, results) {
-          const roleIndex = results[0].id;
-          update(roleIndex, employee);
+          let roleIndex
+          if (results > 0) {
+           roleIndex = results[0].id
+          }
+          updateEmployee(roleIndex, employee, role);
       })
   })
   .then(()=> startPrompt())
